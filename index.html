@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tecni-Cell Bosch — Laboratorio Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <img src="logo.png" alt="Tecni-Cell Bosch" class="brand-logo">
+      <div class="brand-text">
+        <span class="brand-name">Tecni-Cell Bosch</span>
+        <span class="brand-tagline">Laboratorio Digital</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#servicio">Servicio técnico</a>
+      <a href="#accesorios">Accesorios</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <button class="cart-btn" id="cartBtn" aria-label="Ver pedido">
+      <span>Pedido</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="status-pill"><span class="dot"></span> Reparación en el día</p>
+        <h1>Tu equipo entra a la mañana,<br>sale funcionando a la tarde.</h1>
+        <p class="hero-sub">Diagnóstico sin cargo. Service propio, no tercerizamos. Presupuesto antes de arrancar cualquier reparación.</p>
+        <a class="btn btn-primary" id="heroWhatsapp" href="#" target="_blank" rel="noopener">Consultar mi reparación</a>
+      </div>
+      <div class="hero-panel">
+        <div class="panel-row">
+          <span class="panel-label">Tiempo estimado</span>
+          <span class="panel-value">Mismo día</span>
+        </div>
+        <div class="panel-row">
+          <span class="panel-label">Diagnóstico</span>
+          <span class="panel-value">Sin cargo</span>
+        </div>
+        <div class="panel-row">
+          <span class="panel-label">Garantía</span>
+          <span class="panel-value">30 días</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicio" class="services">
+    <h2>Qué reparamos</h2>
+    <div class="service-list" id="serviceList">
+      <!-- se completa con JS desde services.json -->
+    </div>
+  </section>
+
+  <section id="accesorios" class="catalog">
+    <h2>Accesorios</h2>
+    <p class="catalog-sub">Fundas, protectores y repuestos en stock.</p>
+    <div class="product-grid" id="productGrid">
+      <!-- se completa con JS desde products.json -->
+    </div>
+  </section>
+
+  <section id="contacto" class="contact">
+    <h2>Contacto</h2>
+    <div class="contact-grid">
+      <div>
+        <p class="panel-label">Dirección</p>
+        <p>Completar dirección del local</p>
+      </div>
+      <div>
+        <p class="panel-label">Horario</p>
+        <p>Completar horario de atención</p>
+      </div>
+      <div>
+        <p class="panel-label">Transferencia</p>
+        <p>Alias: completar-alias</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Tecni-Cell Bosch — Laboratorio Digital · Servicio técnico y accesorios</p>
+</footer>
+
+<!-- Panel de carrito -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h3>Tu pedido</h3>
+    <button id="cartClose" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-total">
+    <span>Total</span>
+    <span id="cartTotal">$0</span>
+  </div>
+  <a class="btn btn-primary btn-block" id="cartCheckout" href="#" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>
+  <p class="cart-note">Se abre WhatsApp con el detalle del pedido. El pago se coordina por transferencia.</p>
+</aside>
+
+<script src="script.js"></script>
+</body>
+</html>
