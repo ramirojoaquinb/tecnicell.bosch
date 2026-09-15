@@ -67,9 +67,24 @@
 
   <section id="accesorios" class="catalog">
     <h2>Accesorios</h2>
-    <p class="catalog-sub">Fundas, protectores y electronicos en stock.</p>
+    <p class="catalog-sub">Fundas, protectores y repuestos en stock.</p>
+
+    <div class="catalog-controls">
+      <input type="text" id="searchInput" placeholder="Buscar producto..." class="search-input">
+      <select id="categoryFilter" class="filter-select">
+        <option value="">Todas las categorías</option>
+      </select>
+      <select id="sortSelect" class="filter-select">
+        <option value="">Orden por defecto</option>
+        <option value="precio-asc">Precio: menor a mayor</option>
+        <option value="precio-desc">Precio: mayor a menor</option>
+        <option value="nombre-asc">Nombre: A-Z</option>
+      </select>
+    </div>
+
+    <p class="no-results" id="noResults" style="display:none">No se encontraron productos.</p>
     <div class="product-grid" id="productGrid">
-      <!-- se completa con JS desde products.json -->
+      <!-- se completa con JS desde el CSV de Google Sheets -->
     </div>
   </section>
 
@@ -78,15 +93,15 @@
     <div class="contact-grid">
       <div>
         <p class="panel-label">Dirección</p>
-        <p> dirección del local</p>
+        <p>Completar dirección del local</p>
       </div>
       <div>
         <p class="panel-label">Horario</p>
-        <p> horario de atención</p>
+        <p>Completar horario de atención</p>
       </div>
       <div>
         <p class="panel-label">Transferencia</p>
-        <p>Alias: alias</p>
+        <p>Alias: completar-alias</p>
       </div>
     </div>
   </section>
