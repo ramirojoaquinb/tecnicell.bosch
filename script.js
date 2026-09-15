@@ -109,6 +109,18 @@ function parseProductsCSV(csvText){
 
 let allProducts = [];
 
+// Convierte un link de Google Drive a URL directa de imagen.
+// Acepta cualquier formato: .../file/d/XXXX/view, open?id=XXXX, uc?export=view&id=XXXX
+// Si no es un link de Drive, devuelve la URL tal cual (imgur, hosting propio, etc).
+function directImageUrl(url){
+  if (!url) return "";
+  const idMatch = url.match(/[-\w]{25,}/);
+  if (url.indexOf("drive.google.com") !== -1 && idMatch){
+    return "https://drive.google.com/uc?export=view&id=" + idMatch[0];
+  }
+  return url;
+}
+
 async function loadProducts(){
   const grid = document.getElementById("productGrid");
 
@@ -176,7 +188,7 @@ function renderProducts(products){
     const card = document.createElement("div");
     card.className = "product-card";
     const imgHtml = product.imagen
-      ? `<img src="${product.imagen}" alt="${product.nombre}" onerror="this.parentElement.textContent='sin foto'">`
+      ? `<img src="${directImageUrl(product.imagen)}" alt="${product.nombre}" onerror="this.parentElement.textContent='sin foto'">`
       : "sin foto";
     card.innerHTML = `
       <div class="product-img">${imgHtml}</div>
