@@ -1,11 +1,11 @@
 // ======= CONFIGURACIÓN =======
 // Poné acá el número de WhatsApp del local, con código de país, sin + ni espacios.
 // Ejemplo Argentina: 5491122334455
-const WHATSAPP_NUMBER = "5491100000000";
+const WHATSAPP_NUMBER = "5491128509990";
 
 // Pegá acá el link "Publicar en la web" en formato CSV que te da Google Sheets.
 // Ver instrucciones abajo de todo en este mismo archivo.
-const PRODUCTS_CSV_URL = "PEGAR_ACA_EL_LINK_CSV_DE_GOOGLE_SHEETS";
+const PRODUCTS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhiTbo2hSZnGrrHHRfXuGkSRNrHCcZd_fQBTWdFX7aTCFKnoFlV0aF7Thz5JLuI-g8eo5Vn30-ZPUE/pub?gid=0&single=true&output=csv";
 
 // ======= CARRITO =======
 let cart = []; // { id, nombre, precio, cantidad }
@@ -62,7 +62,8 @@ function buildWhatsappLink(){
 // ======= CARGA DE DATOS =======
 
 // Convierte el texto CSV en una lista de productos.
-// Espera columnas en este orden: nombre, precio, imagen (encabezado en la fila 1).
+// Espera columnas en este orden: nombre, precio, imagen, categoria (encabezado en la fila 1).
+// La columna categoria es opcional.
 function parseProductsCSV(csvText){
   const lines = csvText.trim().split("\n");
   const rows = lines.slice(1); // saltea el encabezado
@@ -73,24 +74,75 @@ function parseProductsCSV(csvText){
       const nombre = (cols[0] || "").trim();
       const precio = parseInt((cols[1] || "0").replace(/[^\d]/g, ""), 10) || 0;
       const imagen = (cols[2] || "").trim();
-      return { id: nombre.toLowerCase().replace(/\s+/g, "-"), nombre, precio, imagen };
+      const categoria = (cols[3] || "").trim();
+      return { id: nombre.toLowerCase().replace(/\s+/g, "-"), nombre, precio, imagen, categoria };
     });
 }
 
+let allProducts = [];
+
 async function loadProducts(){
   const grid = document.getElementById("productGrid");
-  let products = [];
 
   try {
     const res = await fetch(PRODUCTS_CSV_URL);
     const csvText = await res.text();
-    products = parseProductsCSV(csvText);
+    allProducts = parseProductsCSV(csvText);
   } catch (err) {
     grid.innerHTML = "<p style='opacity:0.6'>No se pudieron cargar los productos. Revisá el link de Google Sheets en script.js.</p>";
     return;
   }
 
+  fillCategoryFilter(allProducts);
+  renderProducts(allProducts);
+}
+
+function fillCategoryFilter(products){
+  const select = document.getElementById("categoryFilter");
+  const categories = [...new Set(products.map(p => p.categoria).filter(c => c))];
+  categories.forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });
+}
+
+function getFilteredProducts(){
+  const search = document.getElementById("searchInput").value.trim().toLowerCase();
+  const category = document.getElementById("categoryFilter").value;
+  const sort = document.getElementById("sortSelect").value;
+
+  let list = allProducts.filter(p => {
+    const matchesSearch = !search || p.nombre.toLowerCase().includes(search);
+    const matchesCategory = !category || p.categoria === category;
+    return matchesSearch && matchesCategory;
+  });
+
+  if (sort === "precio-asc") list = [...list].sort((a, b) => a.precio - b.precio);
+  if (sort === "precio-desc") list = [...list].sort((a, b) => b.precio - a.precio);
+  if (sort === "nombre-asc") list = [...list].sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+  return list;
+}
+
+function setupCatalogControls(){
+  const rerender = () => renderProducts(getFilteredProducts());
+  document.getElementById("searchInput").addEventListener("input", rerender);
+  document.getElementById("categoryFilter").addEventListener("change", rerender);
+  document.getElementById("sortSelect").addEventListener("change", rerender);
+}
+
+function renderProducts(products){
+  const grid = document.getElementById("productGrid");
+  const noResults = document.getElementById("noResults");
   grid.innerHTML = "";
+
+  if (products.length === 0){
+    noResults.style.display = "block";
+    return;
+  }
+  noResults.style.display = "none";
 
   products.forEach(product => {
     const card = document.createElement("div");
@@ -147,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadServices();
   setupCartDrawer();
   setupHeroButton();
+  setupCatalogControls();
   renderCart();
 });
 
@@ -154,11 +207,12 @@ document.addEventListener("DOMContentLoaded", () => {
  ======= CÓMO CONFIGURAR EL GOOGLE SHEET =======
 
  1. Creá una planilla nueva en Google Sheets.
- 2. En la fila 1 poné los encabezados: nombre | precio | imagen
+ 2. En la fila 1 poné los encabezados: nombre | precio | imagen | categoria
+    (categoria es opcional, la podés dejar vacía si no querés usar el filtro)
  3. Desde la fila 2 para abajo, un producto por fila. Ejemplo:
-      nombre                 precio    imagen
-      Funda negra iPhone     8500
-      Vidrio templado        4000
+      nombre                 precio    imagen    categoria
+      Funda negra iPhone     8500                Fundas
+      Vidrio templado        4000                Protectores
     (la columna imagen podés dejarla vacía por ahora)
  4. Archivo > Compartir > Publicar en la web.
  5. En "Vincular" elegí la hoja correcta, y en el tipo de archivo
