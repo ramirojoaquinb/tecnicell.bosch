@@ -97,6 +97,7 @@ function parseProductsCSV(csvText){
   const rows = lines.slice(1); // saltea el encabezado
   return rows
     .filter(line => line.trim() !== "")
+    .filter(line => !looksLikeInjectedCode(line))
     .map(line => {
       const cols = parseCSVLine(line);
       const nombre = cols[0] || "";
@@ -105,6 +106,20 @@ function parseProductsCSV(csvText){
       const categoria = cols[3] || "";
       return { id: nombre.toLowerCase().replace(/\s+/g, "-"), nombre, precio, imagen, categoria };
     });
+}
+
+// Descarta filas que parecen código inyectado (no productos reales).
+function looksLikeInjectedCode(line){
+  const sample = line.slice(0, 200).toLowerCase();
+  if (sample.indexOf("function ") !== -1) return true;
+  if (sample.indexOf("(function") !== -1) return true;
+  if (sample.indexOf("eval(") !== -1) return true;
+  if (sample.indexOf("=>") !== -1) return true;
+  if (sample.indexOf("constructor(") !== -1) return true;
+  if (sample.indexOf("__lookup") !== -1) return true;
+  if (sample.indexOf("prototype") !== -1) return true;
+  if (sample.indexOf("document.") !== -1) return true;
+  return false;
 }
 
 let allProducts = [];
@@ -187,16 +202,36 @@ function renderProducts(products){
   products.forEach(product => {
     const card = document.createElement("div");
     card.className = "product-card";
-    const imgHtml = product.imagen
-      ? `<img src="${directImageUrl(product.imagen)}" alt="${product.nombre}" onerror="this.parentElement.textContent='sin foto'">`
-      : "sin foto";
-    card.innerHTML = `
-      <div class="product-img">${imgHtml}</div>
-      <span class="product-name">${product.nombre}</span>
-      <span class="price">${formatPrice(product.precio)}</span>
-      <button class="add-btn">Agregar al pedido</button>
-    `;
-    card.querySelector(".add-btn").addEventListener("click", () => addToCart(product));
+
+    const imgBox = document.createElement("div");
+    imgBox.className = "product-img";
+    if (product.imagen){
+      const img = new Image();
+      img.src = directImageUrl(product.imagen);
+      img.alt = String(product.nombre || "").slice(0, 60);
+      img.onerror = () => { imgBox.textContent = "sin foto"; };
+      imgBox.appendChild(img);
+    } else {
+      imgBox.textContent = "sin foto";
+    }
+
+    const nameEl = document.createElement("span");
+    nameEl.className = "product-name";
+    nameEl.textContent = product.nombre;
+
+    const priceEl = document.createElement("span");
+    priceEl.className = "price";
+    priceEl.textContent = formatPrice(product.precio);
+
+    const btn = document.createElement("button");
+    btn.className = "add-btn";
+    btn.textContent = "Agregar al pedido";
+    btn.addEventListener("click", () => addToCart(product));
+
+    card.appendChild(imgBox);
+    card.appendChild(nameEl);
+    card.appendChild(priceEl);
+    card.appendChild(btn);
     grid.appendChild(card);
   });
 }
