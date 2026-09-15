@@ -113,15 +113,44 @@ a{color:inherit; text-decoration:none;}
 .service-item p{font-size:14px; opacity:0.65;}
 
 /* Catalogo */
+.catalog-controls{
+  display:flex; flex-wrap:wrap; gap:12px;
+  margin-bottom:24px;
+}
+.search-input{
+  flex:1; min-width:200px;
+  background:rgba(79,216,240,0.06);
+  border:1px solid var(--line); border-radius:2px;
+  color:var(--paper); padding:10px 14px;
+  font-family:'IBM Plex Sans', sans-serif; font-size:14px;
+}
+.search-input::placeholder{color:rgba(255,255,255,0.35);}
+.search-input:focus{outline:none; border-color:var(--cyan);}
+.filter-select{
+  background:var(--ink); border:1px solid var(--line); border-radius:2px;
+  color:var(--paper); padding:10px 14px;
+  font-family:'IBM Plex Sans', sans-serif; font-size:14px; cursor:pointer;
+}
+.filter-select:focus{outline:none; border-color:var(--cyan);}
+.filter-select option{background:var(--ink); color:var(--paper);}
+.no-results{
+  border:1px dashed var(--line); border-radius:2px;
+  padding:28px; text-align:center; margin-bottom:24px;
+  color:rgba(255,255,255,0.55); font-size:14px;
+}
+
 .product-grid{
   display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:1px;
   background:var(--line);
 }
 .product-card{background:var(--ink); padding:18px; display:flex; flex-direction:column; gap:10px;}
 .product-img{
-  width:100%; aspect-ratio:1; background:var(--panel);
+  width:100%; aspect-ratio:1; background:linear-gradient(135deg, var(--panel), #0e1a4f);
   display:flex; align-items:center; justify-content:center;
-  font-size:13px; opacity:0.4; overflow:hidden;
+  font-size:11px; letter-spacing:0.06em; text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+  border:1px solid var(--line); border-radius:2px;
+  overflow:hidden;
 }
 .product-img img{width:100%; height:100%; object-fit:cover;}
 .product-name{font-size:15px;}
@@ -166,4 +195,6 @@ a{color:inherit; text-decoration:none;}
   .nav{display:none;}
   .contact-grid{grid-template-columns:1fr;}
   .cart-drawer{width:88%; right:-100%;}
+  .catalog-controls{flex-direction:column;}
+  .search-input{width:100%; min-width:0;}
 }
