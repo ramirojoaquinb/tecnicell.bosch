@@ -126,12 +126,13 @@ let allProducts = [];
 
 // Convierte un link de Google Drive a URL directa de imagen.
 // Acepta cualquier formato: .../file/d/XXXX/view, open?id=XXXX, uc?export=view&id=XXXX
+// Usa el CDN de imágenes de Google (lh3.googleusercontent.com), más estable que uc.
 // Si no es un link de Drive, devuelve la URL tal cual (imgur, hosting propio, etc).
 function directImageUrl(url){
   if (!url) return "";
   const idMatch = url.match(/[-\w]{25,}/);
   if (url.indexOf("drive.google.com") !== -1 && idMatch){
-    return "https://drive.google.com/uc?export=view&id=" + idMatch[0];
+    return "https://lh3.googleusercontent.com/d/" + idMatch[0];
   }
   return url;
 }
