@@ -5,7 +5,7 @@ const WHATSAPP_NUMBER = "5491128509990";
 
 // Pegá acá el link "Publicar en la web" en formato CSV que te da Google Sheets.
 // Ver instrucciones abajo de todo en este mismo archivo.
-const PRODUCTS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhiTbo2hSZnGrrHHRfXuGkSRNrHCcZd_fQBTWdFX7aTCFKnoFlV0aF7Thz5JLuI-g8eo5Vn30-ZPUE/pub?gid=0&single=true&output=csv";
+const PRODUCTS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQYvC8IK6SHTtS3UYB4528ktLcXz2Q4u-A7YiX5t2WYh29GZuqIJXaxz76zmeyXVoEL1CrH0SNK95pX/pub?gid=0&single=true&output=csv";
 
 // ======= CARRITO =======
 let cart = []; // { id, nombre, precio, cantidad }
