@@ -61,20 +61,48 @@ function buildWhatsappLink(){
 
 // ======= CARGA DE DATOS =======
 
+// Convierte una línea CSV en un array de columnas, respetando comillas.
+// Ej: "Funda, negra","8500","https://...","Fundas"
+function parseCSVLine(line){
+  const cols = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++){
+    const ch = line[i];
+    if (inQuotes){
+      if (ch === '"'){
+        if (line[i + 1] === '"'){ current += '"'; i++; }
+        else inQuotes = false;
+      } else {
+        current += ch;
+      }
+    } else if (ch === '"'){
+      inQuotes = true;
+    } else if (ch === ","){
+      cols.push(current);
+      current = "";
+    } else {
+      current += ch;
+    }
+  }
+  cols.push(current);
+  return cols.map(c => c.trim());
+}
+
 // Convierte el texto CSV en una lista de productos.
 // Espera columnas en este orden: nombre, precio, imagen, categoria (encabezado en la fila 1).
 // La columna categoria es opcional.
 function parseProductsCSV(csvText){
-  const lines = csvText.trim().split("\n");
+  const lines = csvText.trim().split(/\r?\n/);
   const rows = lines.slice(1); // saltea el encabezado
   return rows
     .filter(line => line.trim() !== "")
     .map(line => {
-      const cols = line.split(",");
-      const nombre = (cols[0] || "").trim();
+      const cols = parseCSVLine(line);
+      const nombre = cols[0] || "";
       const precio = parseInt((cols[1] || "0").replace(/[^\d]/g, ""), 10) || 0;
-      const imagen = (cols[2] || "").trim();
-      const categoria = (cols[3] || "").trim();
+      const imagen = cols[2] || "";
+      const categoria = cols[3] || "";
       return { id: nombre.toLowerCase().replace(/\s+/g, "-"), nombre, precio, imagen, categoria };
     });
 }
@@ -147,8 +175,11 @@ function renderProducts(products){
   products.forEach(product => {
     const card = document.createElement("div");
     card.className = "product-card";
+    const imgHtml = product.imagen
+      ? `<img src="${product.imagen}" alt="${product.nombre}" onerror="this.parentElement.textContent='sin foto'">`
+      : "sin foto";
     card.innerHTML = `
-      <div class="product-img">${product.imagen ? `<img src="${product.imagen}" alt="${product.nombre}">` : "sin foto"}</div>
+      <div class="product-img">${imgHtml}</div>
       <span class="product-name">${product.nombre}</span>
       <span class="price">${formatPrice(product.precio)}</span>
       <button class="add-btn">Agregar al pedido</button>
